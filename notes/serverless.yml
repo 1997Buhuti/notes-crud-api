@@ -1,5 +1,5 @@
 service: notes-api
-frameworkVersion: "2"
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -11,6 +11,11 @@ provider:
 functions:
   createNote:
     handler: handler.createNote
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: !GetAtt NewResource.Arn
     events:
       - httpApi:
           path: /notes
@@ -33,6 +38,9 @@ functions:
       - httpApi:
           path: /notes/{id}
           method: get
+
+plugins:
+  - serverless-iam-roles-per-function
 # you can add CloudFormation resource templates here
 resources:
   Resources:
